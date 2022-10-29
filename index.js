@@ -146,7 +146,7 @@ async function run() {
       const filename = file.replace(/^.*[\\/]/, "");
       if (isExperimentFile(file) && !IGNORE_FILE.includes(filename)) {
         await uploadFile(file);
-        await wait('250');
+        await wait(250);
       }
     }
   } catch (error) {
