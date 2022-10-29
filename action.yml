@@ -1,13 +1,15 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Cognition Deploy'
+description: 'Automatically deploy your JsPsych experiment to Cognition.'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  personal-access-token:
+    description: 'The token needed to deploy your experiment. Get one at https://www.cognition.run/account'
     required: true
-    default: '1000'
+  jspsych-version:
+    description: 'JsPsych library version used, e.g., 7.3.0, 6.3.1'
+    required: false
 outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  link:
+    description: 'The link to the task. Share this link with your participants.'
 runs:
   using: 'node16'
   main: 'dist/index.js'
