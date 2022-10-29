@@ -13850,18 +13850,17 @@ const jspsych_version = `${core.getInput("jspsych-version")}`;
 const API_KEY_URL = "https://www.cognition.run/account";
 const UPGRADE_URL = "https://www.cognition.run/account";
 const SUPPORT_FORM =
-    "https://docs.google.com/forms/d/e/1FAIpQLSdYg3h6ESzd81rHlGlAib_kXA56ERuy0MBM1CwPeUdTv4lvcQ/viewform";
+  "https://docs.google.com/forms/d/e/1FAIpQLSdYg3h6ESzd81rHlGlAib_kXA56ERuy0MBM1CwPeUdTv4lvcQ/viewform";
 
 const ENDPOINT = "https://www.cognition.run/external/api/github/v1/resource";
 let repository = github.context.payload.repository;
-const REQUEST_URL = `${ENDPOINT}/${repository ? repository.name:''}`;
+const REQUEST_URL = `${ENDPOINT}/${repository ? repository.name : ""}`;
 const AUTHORIZATION = `Bearer ${personal_access_token_input}`;
-
 
 async function httpPostFileError(filePath, errorMessage, httpResponse) {
   core.error(errorMessage);
   core.debug(
-      `Error uploading ${filePath} to ${httpResponse.method}:${httpResponse.url} with status code ${httpResponse.statusCode}`
+    `Error uploading ${filePath} to ${httpResponse.method}:${httpResponse.url} with status code ${httpResponse.statusCode}`
   );
   core.setFailed(`Unable to deploy ${filePath} to Cognition.`);
 }
@@ -13877,7 +13876,7 @@ async function uploadFile(filePath) {
   const filename = filePath.replace(/^.*[\\/]/, "");
 
   if (jspsych_version != null) {
-    formData.append('jspsych_version', jspsych_version);
+    formData.append("jspsych_version", jspsych_version);
   }
 
   formData.append("file", fileReadStream, {
@@ -13921,33 +13920,33 @@ async function uploadFile(filePath) {
 
     if (statusCode === 401 || statusCode === 403) {
       await httpPostFileError(
-          filePath,
-          `Unable to deploy ${filePath} to Cognition. The action script could connect to Cognition server, but the 
+        filePath,
+        `Unable to deploy ${filePath} to Cognition. The action script could connect to Cognition server, but the 
         API key has expired or is not recognized by the system. Check your Cognition account API key at ${API_KEY_URL} . 
         If the problem persist, please contact us at ${SUPPORT_FORM} .`,
-          response
+        response
       );
     } else if (statusCode === 402) {
       await httpPostFileError(
-          filePath,
-          `Unable to deploy ${filePath} to Cognition. Your credentials are correct, but your account has reached 
+        filePath,
+        `Unable to deploy ${filePath} to Cognition. Your credentials are correct, but your account has reached 
     the limit of stored tasks or your current plan do not support the current experiment. Upgrade your plan at: ${UPGRADE_URL}`,
-          response
+        response
       );
     } else if (statusCode === 404 || statusCode === 422) {
       await httpPostFileError(
-          filePath,
-          `Unable to deploy ${filePath} to Cognition. The action could connect to the server, but the deploy 
+        filePath,
+        `Unable to deploy ${filePath} to Cognition. The action could connect to the server, but the deploy 
     was rejected. This issue can be related to a deprecated action version. Please upgrade your workflow file to require
     the last version of this action. If the problem persist, please contact us at ${SUPPORT_FORM} .`,
-          response
+        response
       );
     } else if (statusCode !== 200) {
       await httpPostFileError(
-          filePath,
-          `Unable to deploy ${filePath} to Cognition. The script could connect to Cognition server, but it 
+        filePath,
+        `Unable to deploy ${filePath} to Cognition. The script could connect to Cognition server, but it 
         found an unexpected error. Please try again later. If the problem persist  , please contact us at ${SUPPORT_FORM} .`,
-          response
+        response
       );
     } else {
       core.info(`${filePath} successfully uploaded to Cognition.`);
@@ -13964,19 +13963,22 @@ async function run() {
   try {
     // Look for index.js or index.html
     const globber = await glob.create(
-        SOURCE_TYPES.concat(IMAGE_TYPES)
-            .concat(AUDIO_TYPES)
-            .concat(VIDEO_TYPES)
-            .join("\n"),
-        {
-          followSymbolicLinks: false,
-        }
+      SOURCE_TYPES.concat(IMAGE_TYPES)
+        .concat(AUDIO_TYPES)
+        .concat(VIDEO_TYPES)
+        .join("\n"),
+      {
+        followSymbolicLinks: false,
+      }
     );
-    for await (const file of globber.globGenerator()) {
+    const files = globber.globGenerator();
+    const firsFile = await files.next();
+    await uploadFile(firsFile);
+    await wait(1000); //Make sure one task is created
+    for await (const file of files) {
       const filename = file.replace(/^.*[\\/]/, "");
       if (isExperimentFile(file) && !IGNORE_FILE.includes(filename)) {
         await uploadFile(file);
-        await wait(250);
       }
     }
   } catch (error) {
