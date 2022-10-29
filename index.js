@@ -142,7 +142,7 @@ async function run() {
       }
     );
     const files = globber.globGenerator();
-    const firsFile = await files.next();
+    const firsFile = (await files.next()).value;
     await uploadFile(firsFile);
     await wait(1000); //Make sure one task is created
     for await (const file of files) {
