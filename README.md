@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: javidalpe/cognition-deploy-action@v1.0.0
+        id: deploy
         with:
           personal-access-token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
       - run: echo "The public link to the task is ${{ steps.deploy.outputs.link }}"
