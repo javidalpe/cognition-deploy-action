@@ -88,11 +88,11 @@ async function uploadFile(filePath) {
       }
     });
 
-    if (statusCode === 401 || statusCode === 403) {
+    if (statusCode === 401 || statusCode === 403 || statusCode === 302) {
       await httpPostFileError(
         filePath,
         `Unable to deploy ${filePath} to Cognition. The action script could connect to Cognition server, but the 
-        API key has expired or is not recognized by the system. Check your Cognition account API key at ${API_KEY_URL} . 
+        Personal Access Token secret has expired or is not recognized by the system. Check your Cognition Personal access token at ${API_KEY_URL} . 
         If the problem persist, please contact us at ${SUPPORT_FORM} .`,
         response
       );
@@ -100,7 +100,8 @@ async function uploadFile(filePath) {
       await httpPostFileError(
         filePath,
         `Unable to deploy ${filePath} to Cognition. Your credentials are correct, but your account has reached 
-    the limit of stored tasks or your current plan do not support the current experiment. Upgrade your plan at: ${UPGRADE_URL}`,
+    the limit of stored tasks or your current plan do not support the this experiment due to the limit of external libraries (css or js files) and 
+    stimuli allowed per each task. Upgrade your plan at: ${UPGRADE_URL} . If the problem persist, please contact us at ${SUPPORT_FORM} .`,
         response
       );
     } else if (statusCode === 404 || statusCode === 422) {
@@ -115,7 +116,7 @@ async function uploadFile(filePath) {
       await httpPostFileError(
         filePath,
         `Unable to deploy ${filePath} to Cognition. The script could connect to Cognition server, but it 
-        found an unexpected error. Please try again later. If the problem persist  , please contact us at ${SUPPORT_FORM} .`,
+        found an unexpected error. Please try again later. If the problem persist, please contact us at ${SUPPORT_FORM} .`,
         response
       );
     } else {
@@ -130,6 +131,12 @@ function isExperimentFile(file) {
 
 // most @actions toolkit packages have async methods
 async function run() {
+
+  if (!personal_access_token_input) {
+    core.setFailed(`personal-access-token action input is required.`);
+    return;
+  }
+
   try {
     // Look for index.js or index.html
     const globber = await glob.create(
