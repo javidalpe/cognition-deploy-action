@@ -13987,7 +13987,10 @@ async function uploadFile(filePath, ignoreJS) {
   if (jspsych_version != null) {
     formData.append("jspsych_version", jspsych_version);
   }
-  formData.append("ignore_js", ignoreJS);
+
+  if (ignoreJS) {
+    formData.append("ignore_js", "true");
+  }
 
   formData.append("file", fileReadStream, {
     knownLength: fileStats.size,
