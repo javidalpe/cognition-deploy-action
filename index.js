@@ -35,7 +35,7 @@ async function httpPostFileError(filePath, errorMessage, httpResponse) {
   core.setFailed(`Unable to deploy ${filePath} to Cognition.`);
 }
 
-async function uploadFile(filePath) {
+async function uploadFile(filePath, ignoreJS) {
   core.debug(`Uploading ${filePath} to Cognition.`);
 
   const fileHandle = await fs.open(filePath);
@@ -48,6 +48,7 @@ async function uploadFile(filePath) {
   if (jspsych_version != null) {
     formData.append("jspsych_version", jspsych_version);
   }
+  formData.append("ignore_js", ignoreJS);
 
   formData.append("file", fileReadStream, {
     knownLength: fileStats.size,
@@ -131,7 +132,6 @@ function isExperimentFile(file) {
 
 // most @actions toolkit packages have async methods
 async function run() {
-
   if (!personal_access_token_input) {
     core.setFailed(`personal-access-token action input is required.`);
     return;
@@ -149,13 +149,21 @@ async function run() {
       }
     );
     const files = globber.globGenerator();
-    const firsFile = (await files.next()).value;
-    await uploadFile(firsFile);
-    await wait(1000); //Make sure one task is created
+    let firstFileUploaded = false;
+    let ignoreJS = false;
+
     for await (const file of files) {
       const filename = file.replace(/^.*[\\/]/, "");
       if (isExperimentFile(file) && !IGNORE_FILE.includes(filename)) {
-        await uploadFile(file);
+        await uploadFile(file, ignoreJS);
+        if (!firstFileUploaded) {
+          firstFileUploaded = true;
+          await wait(1000); //Make sure one task is created
+        }
+        // If there is a index.js, ignore index.html javascript
+        if (filename === "index.js") {
+          ignoreJS = true;
+        }
       }
     }
   } catch (error) {
