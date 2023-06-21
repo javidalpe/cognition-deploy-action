@@ -14098,13 +14098,15 @@ async function run() {
       const filename = file.replace(/^.*[\\/]/, "");
       if (isExperimentFile(file) && !IGNORE_FILE.includes(filename)) {
         await uploadFile(file, ignoreJS);
+        // If we just sent index.js, ignore index.html javascript
+        if (filename === "index.js") {
+          ignoreJS = true;
+        }
         if (!firstFileUploaded) {
           firstFileUploaded = true;
           await wait(1000); //Make sure one task is created
-        }
-        // If there is a index.js, ignore index.html javascript
-        if (filename === "index.js") {
-          ignoreJS = true;
+        } else {
+          await wait(200);
         }
       }
     }
