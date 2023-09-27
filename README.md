@@ -1,6 +1,6 @@
 # Cognition Deploy
 
-Automatically deploy your JsPsych experiment to Cognition.
+Automatically deploy your behavioral JsPsych experiment to [Cognition](https://www.cognition.run).
 
 ## Example usage
 
