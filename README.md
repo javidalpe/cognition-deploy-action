@@ -13,7 +13,7 @@ jobs:
     name: Deploy experiment to Cognition
     steps:
       - uses: actions/checkout@v3
-      - uses: javidalpe/cognition-deploy-action@v1.0.0
+      - uses: javidalpe/cognition-deploy-action@v1.1.2
         id: deploy
         with:
           personal-access-token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
