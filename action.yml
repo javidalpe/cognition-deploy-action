@@ -5,7 +5,7 @@ inputs:
     description: 'The token needed to deploy your experiment. Get one at https://www.cognition.run/account'
     required: true
   jspsych-version:
-    description: 'JsPsych library version used, e.g., 7.3.0, 6.3.1'
+    description: 'JsPsych library version used, e.g., 8.0.2'
     required: false
 outputs:
   link:

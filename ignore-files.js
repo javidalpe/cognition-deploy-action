@@ -1,6 +1,6 @@
 module.exports = Object.freeze({
+  // Updated with JsPsych 8
   IGNORE_FILE: [
-    //7.3
     "extension-mouse-tracking.js",
     "extension-record-video.js",
     "extension-webgazer.js",
@@ -42,15 +42,15 @@ module.exports = Object.freeze({
     "plugin-resize.js",
     "plugin-same-different-html.js",
     "plugin-same-different-image.js",
-    "plugin-serial-reaction-time-mouse.js",
     "plugin-serial-reaction-time.js",
+    "plugin-serial-reaction-time-mouse.js",
     "plugin-sketchpad.js",
+    "plugin-survey.js",
     "plugin-survey-html-form.js",
     "plugin-survey-likert.js",
     "plugin-survey-multi-choice.js",
     "plugin-survey-multi-select.js",
     "plugin-survey-text.js",
-    "plugin-survey.js",
     "plugin-video-button-response.js",
     "plugin-video-keyboard-response.js",
     "plugin-video-slider-response.js",
@@ -59,8 +59,8 @@ module.exports = Object.freeze({
     "plugin-webgazer-calibrate.js",
     "plugin-webgazer-init-camera.js",
     "plugin-webgazer-validate.js",
+    "survey.css",
     "test-utils.js",
-    //6.3
     "jspsych-ext-webgazer.js",
     "jspsych-animation.js",
     "jspsych-audio-button-response.js",

@@ -8,6 +8,7 @@ const {
   IMAGE_TYPES,
   AUDIO_TYPES,
   VIDEO_TYPES,
+  DATA_TYPES,
 } = require("./include-files");
 const FormData = require("form-data");
 const https = require("https");
@@ -146,6 +147,7 @@ async function run() {
       SOURCE_TYPES.concat(IMAGE_TYPES)
         .concat(AUDIO_TYPES)
         .concat(VIDEO_TYPES)
+        .concat(DATA_TYPES)
         .join("\n"),
       {
         followSymbolicLinks: false,
@@ -159,7 +161,7 @@ async function run() {
       const filename = file.replace(/^.*[\\/]/, "");
       if (isExperimentFile(file) && !IGNORE_FILE.includes(filename)) {
         await uploadFile(file, ignoreJS);
-        // If we just sent index.js, ignore index.html javascript
+        // If we sent index.js, ignore index.html javascript
         if (filename === "index.js") {
           ignoreJS = true;
         }
