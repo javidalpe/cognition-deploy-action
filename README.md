@@ -13,7 +13,7 @@ jobs:
     name: Deploy experiment to Cognition
     steps:
       - uses: actions/checkout@v3
-      - uses: javidalpe/cognition-deploy-action@v1.1.2
+      - uses: javidalpe/cognition-deploy-action@v1.2.0
         id: deploy
         with:
           personal-access-token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
@@ -28,7 +28,7 @@ jobs:
 
 ### `jspsych-version`
 
-**Optional** JsPsych library version used, e.g., 7.3.0, 6.3.1
+**Optional** JsPsych library version used, e.g., 8.0.2
 
 ## Outputs
 
